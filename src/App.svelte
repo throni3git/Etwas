@@ -1,6 +1,17 @@
+<script lang="ts">
+  import Background from "./Background.svelte";
+  let rnd: number;
+  function resetRnd() {
+    rnd = Math.random() * 360;
+  }
+  resetRnd();
+</script>
+
 <main>
+  <Background bgColorHue={rnd} />
   <h1>Etwas</h1>
   <p>Nimm dir Zeit und schreib etwas</p>
+  <button on:click={resetRnd}>rnd</button>
 </main>
 
 <style>
@@ -11,11 +22,12 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
   }
 
   h1,
   p {
-    opacity: 0.3;
+    opacity: 0.2;
   }
 
   h1 {
