@@ -4,53 +4,54 @@
 
   export let bgColorHue: number = 10;
   let fromColorHue = bgColorHue;
-  let fresh = false;
+  let colorNeedsUpdate = false;
+
+  function getNewRandomHSLColor(hue: number) {
+    return `hsl(${Math.floor(hue)}, 80%, 50%)`;
+  }
+
+  function getGradientString(colorA: string, colorB: string) {
+    const angle = Math.floor(Math.random() * 360);
+    return `background: linear-gradient(${angle}deg, ${colorA}, ${colorB});`;
+  }
+
+  const HUE_DISTANCE = 60;
+
+  let fromGradientString = getGradientString(
+    getNewRandomHSLColor(fromColorHue),
+    getNewRandomHSLColor(fromColorHue + HUE_DISTANCE)
+  );
+
+  let toGradientString = getGradientString(
+    getNewRandomHSLColor(bgColorHue),
+    getNewRandomHSLColor(bgColorHue + HUE_DISTANCE)
+  );
 
   beforeUpdate(() => {
     console.log(["before", fromColorHue, bgColorHue]);
 
     if (fromColorHue != bgColorHue) {
-      fresh = true;
+      colorNeedsUpdate = true;
     }
 
     fromGradientString = toGradientString;
 
     toGradientString = getGradientString(
       getNewRandomHSLColor(bgColorHue),
-      getNewRandomHSLColor(bgColorHue + 100)
+      getNewRandomHSLColor(bgColorHue + HUE_DISTANCE)
     );
     fromColorHue = bgColorHue;
   });
 
   afterUpdate(() => {
-    fresh = false;
+    colorNeedsUpdate = false;
     console.log(["after", fromColorHue, bgColorHue]);
   });
-
-  function getNewRandomHSLColor(hue: number) {
-    return `hsl(${Math.floor(hue)}, 80%, 60%)`;
-  }
-
-  function getGradientString(colorA: string, colorB: string) {
-    return `background: linear-gradient(${Math.floor(
-      Math.random() * 360
-    )}deg, ${colorA}, ${colorB});`;
-  }
-
-  let fromGradientString = getGradientString(
-    getNewRandomHSLColor(fromColorHue),
-    getNewRandomHSLColor(fromColorHue + 100)
-  );
-
-  let toGradientString = getGradientString(
-    getNewRandomHSLColor(bgColorHue),
-    getNewRandomHSLColor(bgColorHue + 100)
-  );
 </script>
 
 <div class="container">
   <div class="to" style={toGradientString} />
-  {#if fresh}
+  {#if colorNeedsUpdate}
     <div
       class="from"
       style={fromGradientString}
